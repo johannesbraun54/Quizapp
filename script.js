@@ -34,14 +34,18 @@ let rightAnswers = 0
 
 let AUDIO_RIGHT = new Audio('sounds/right.mp3');
 let AUDIO_WRONG = new Audio('sounds/wrong.mp3');
-
+/**
+ * Loads The actually Question
+ */
 function init(){
    document.getElementById('allQuestions').innerHTML = `${questions.length}`
    document.getElementById('firstQuestion').innerHTML = `${actuallyQuestion}`
    showQuestion()
 
 }
-
+/**
+ * Renders the progress bar and the current question with the four diffrent answers
+ */
 function showQuestion(){
     let question = questions[currentQuestion] 
 
@@ -66,6 +70,10 @@ function showQuestion(){
 
 }
 
+/**
+ * Defines the right answer
+ * @param {string} selection 
+ */
 function rightAnswer(selection){
     let question = questions[currentQuestion] 
     let selectedQuestionNumber = selection.slice(-1);
@@ -73,6 +81,11 @@ function rightAnswer(selection){
         rightAnswers++
     }
 }
+
+/**
+ * Checks, if the choosed Answer is correct 
+ * @param {string} selection 
+ */
 
 function answer(selection){
     let question = questions[currentQuestion] 
@@ -90,6 +103,9 @@ function answer(selection){
     document.getElementById('next-button').disabled = false;
     rightAnswer(selection)
 }
+/**
+ * Generates the next question
+ */
 
 function nextQuestion(){
     currentQuestion++
@@ -100,7 +116,9 @@ function nextQuestion(){
 
     document.getElementById('next-button').disabled = true;
     
-
+/**
+ * reseted the answer buttons before the next question is loaded
+ */
 }
 
 function resetAnswerButtons(){
@@ -113,6 +131,10 @@ function resetAnswerButtons(){
     document.getElementById('answer_4').parentNode.classList.remove('bg-danger')
     document.getElementById('answer_4').parentNode.classList.remove('bg-success')
 }
+
+/**
+ * This function is used to start a new round 
+ */
 
 function restartGame(){
     document.getElementById('endScreen').style = 'display:none;'
