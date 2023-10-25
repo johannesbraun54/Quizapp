@@ -38,36 +38,66 @@ let AUDIO_WRONG = new Audio('sounds/wrong.mp3');
  * Loads The actually Question
  */
 function init(){
-   document.getElementById('allQuestions').innerHTML = `${questions.length}`
-   document.getElementById('firstQuestion').innerHTML = `${actuallyQuestion}`
-   showQuestion()
-
-}
+    document.getElementById('allQuestions').innerHTML = `${questions.length}`
+    document.getElementById('firstQuestion').innerHTML = `${actuallyQuestion}`
+    showQuestion()
+ 
+ }
 /**
  * Renders the progress bar and the current question with the four diffrent answers
  */
 function showQuestion(){
-    let question = questions[currentQuestion] 
 
-    if(currentQuestion >= questions.length){
-        document.getElementById('endScreen').style = ''
-        document.getElementById('questionBody').style = 'display:none;'
-        document.getElementById('totalQuestions').innerHTML = `${questions.length}`
-        document.getElementById('rightAnswers').innerHTML = `${rightAnswers}`
-    }else{
-      let percent = currentQuestion / questions.length
-      percent =  Math.round(percent * 100) 
-
-    document.getElementById('progressBar').innerHTML = `${percent}%`
-    document.getElementById('progressBar').style.width = `${percent}%`    
-    document.getElementById('questiontext').innerHTML = `${question['question']}`
-    document.getElementById('answer_1').innerHTML = `${question['answer_1']}`
-    document.getElementById('answer_2').innerHTML = `${question['answer_2']}`
-    document.getElementById('answer_3').innerHTML = `${question['answer_3']}`    
-    document.getElementById('answer_4').innerHTML = `${question['answer_4']}`
+    if(gameIsOver()){
+        showEndScreen()}
+        else{
+        updateToNextQuestion()
+        updateProgressBar()
     }
+}
 
+/**
+ * 
+ * @returns if all question are answerd - game is over
+ */
 
+function gameIsOver(){
+    return currentQuestion >= questions.length
+}
+
+/**
+ * The progress bar becomes updated
+ */
+
+function updateProgressBar(){
+    let percent = currentQuestion / questions.length
+    percent =  Math.round(percent * 100) 
+
+  document.getElementById('progressBar').innerHTML = `${percent}%`
+  document.getElementById('progressBar').style.width = `${percent}%`  
+}
+/**
+ * If a question is answerded, next question is loading
+ */
+function updateToNextQuestion(){
+    let question = questions[currentQuestion] 
+     
+  document.getElementById('questiontext').innerHTML = `${question['question']}`
+  document.getElementById('answer_1').innerHTML = `${question['answer_1']}`
+  document.getElementById('answer_2').innerHTML = `${question['answer_2']}`
+  document.getElementById('answer_3').innerHTML = `${question['answer_3']}`    
+  document.getElementById('answer_4').innerHTML = `${question['answer_4']}`
+}
+
+/**
+ * renders the endscreen after a game
+ */
+
+function showEndScreen(){
+    document.getElementById('endScreen').style = ''
+    document.getElementById('questionBody').style = 'display:none;'
+    document.getElementById('totalQuestions').innerHTML = `${questions.length}`
+    document.getElementById('rightAnswers').innerHTML = `${rightAnswers}`
 }
 
 /**
@@ -86,23 +116,44 @@ function rightAnswer(selection){
  * Checks, if the choosed Answer is correct 
  * @param {string} selection 
  */
-
 function answer(selection){
     let question = questions[currentQuestion] 
     let selectedQuestionNumber = selection.slice(-1);
     let idOfRightAnswer = `answer_${question['right_answer']}`
 
-    if(selectedQuestionNumber == question['right_answer']){
+    if(rightAnswerSelected(selectedQuestionNumber)){
         document.getElementById(selection).parentNode.classList.add('bg-success')
         AUDIO_RIGHT.play()
+        changeButtonStatus()
     } else
     {document.getElementById(selection).parentNode.classList.add('bg-danger')
     document.getElementById(idOfRightAnswer).parentNode.classList.add('bg-success')
-    AUDIO_WRONG.play()}
-    
-    document.getElementById('next-button').disabled = false;
+    AUDIO_WRONG.play()
+    changeButtonStatus()}    
     rightAnswer(selection)
 }
+
+/**
+ * @param {string} selectedQuestionNumber 
+ * @returns 
+ */
+
+function rightAnswerSelected(selectedQuestionNumber){
+    let question = questions[currentQuestion] 
+   return selectedQuestionNumber == question['right_answer']
+}
+
+/**
+ * Changes the status of the buttons
+ */
+function changeButtonStatus(){
+    document.getElementById('next-button').disabled = false;
+    document.getElementById('buttonOne').disabled = true;       
+    document.getElementById('buttonTwo').disabled = true       
+    document.getElementById('buttonThree').disabled = true       
+    document.getElementById('buttonFour').disabled = true       
+}
+
 /**
  * Generates the next question
  */
@@ -115,11 +166,17 @@ function nextQuestion(){
     resetAnswerButtons()
 
     document.getElementById('next-button').disabled = true;
+    document.getElementById('buttonOne').disabled = false;       
+    document.getElementById('buttonTwo').disabled = false       
+    document.getElementById('buttonThree').disabled = false       
+    document.getElementById('buttonFour').disabled = false  
+    
+
+}
     
 /**
  * reseted the answer buttons before the next question is loaded
  */
-}
 
 function resetAnswerButtons(){
     document.getElementById('answer_1').parentNode.classList.remove('bg-danger')
